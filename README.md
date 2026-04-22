@@ -30,7 +30,7 @@ Representative views of the app (marketing landing and tailor workspace).
 
 ## Requirements
 
-- **Node.js ≥ 18.17** (Node 20 LTS recommended)
+- **Node.js ≥ 18.17** (Node 20 LTS recommended). If `node -v` shows 16.x, use Homebrew’s Node 20, e.g. `export PATH="/usr/local/opt/node@20/bin:$PATH"` (Apple Silicon: `/opt/homebrew/opt/node@20/bin`).
 - An [Anthropic API key](https://console.anthropic.com/)
 
 ---
@@ -55,6 +55,22 @@ Open [http://localhost:3000](http://localhost:3000). Use **Open App** or go to `
 
 Use `.env.local` locally; on **Vercel** (or similar), set the same variables in the project dashboard.
 
+### What belongs in Git
+
+**Commit:** application source, `package.json` / lockfile, `README.md`, `.env.example`, `docs/`, and `next-env.d.ts` (TypeScript refs for Next — regenerate with `next dev` or `next build` if missing).
+
+**Do not commit:** anything ignored by `.gitignore`, including:
+
+- **Secrets:** any `.env*` file except `.env.example` (see `.gitignore`)
+- **Dependencies:** `node_modules/`
+- **Build output:** `.next/`, `out/`, `dist/`
+- **Deploy metadata:** `.vercel/`
+- **OS / editor noise:** `.DS_Store`, `Thumbs.db`, `.vscode/`, `.idea/`
+- **Local AI tooling:** `.claude/` (Claude Code machine-specific settings)
+- **Caches:** `*.tsbuildinfo`, `.eslintcache`, `.turbo`
+
+If you are unsure, run `git status` before committing and never `git add .env*`.
+
 ### Scripts
 
 | Command | Purpose |
@@ -73,10 +89,12 @@ Use `.env.local` locally; on **Vercel** (or similar), set the same variables in 
 │   ├── api/tailor/route.ts   # POST → Anthropic, returns tailored text + score
 │   ├── tailor/page.tsx       # Tailor page metadata + app shell
 │   ├── layout.tsx
-│   ├── page.tsx              # Landing
+│   ├── page.tsx              # Re-exports landing page
 │   └── globals.css
 ├── components/
-│   └── ResumeTailorApp.tsx   # Main client UI + exports
+│   ├── landing/              # Marketing page sections
+│   ├── tailor/               # Resume tailor UI, hooks, export helpers
+│   └── ResumeTailorApp.tsx   # Re-export of tailor/ResumeTailorApp
 ├── lib/
 │   ├── keywords.ts           # JD keyword extraction + match scoring
 │   ├── parseResumeOutput.ts  # Shared line parsing for .docx / PDF
