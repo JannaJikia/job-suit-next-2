@@ -7,6 +7,8 @@ Your **Anthropic API key stays on the server** — visitors never see it.
 Stack: **Next.js 14** (App Router), **TypeScript**, **Tailwind CSS**, **Anthropic SDK**.
 
 ---
+## Deployed Preview
+https://job-suit-nextgen.vercel.app/
 
 ## Screenshots
 
