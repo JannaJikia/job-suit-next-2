@@ -16,7 +16,7 @@ import { useTailorPersistence } from "./useTailorPersistence";
 export default function ResumeTailorApp() {
   const [resume, setResume] = useState("");
   const [jd, setJd] = useState("");
-  const [tone, setTone] = useState(TONE_OPTIONS[0].value);
+  const [tone, setTone] = useState<string>(TONE_OPTIONS[0].value);
   const [pages, setPages] = useState("1–2 pages");
   const [output, setOutput] = useState("");
   const [status, setStatus] = useState<TailorStatus>(null);

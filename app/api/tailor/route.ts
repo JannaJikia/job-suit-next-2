@@ -4,7 +4,7 @@ import { buildPrompt } from "@/lib/prompt";
 import { extractKeywords, scoreMatch } from "@/lib/keywords";
 
 export const runtime = "nodejs";
-export const maxDuration = 60;
+export const maxDuration = 10;
 
 interface Body {
   resume?: string;
