@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "description": "JobSuit — tailor your resume to any job description using Claude, optimized for ATS.",
+  "engines": {
+    "node": ">=18.17.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",

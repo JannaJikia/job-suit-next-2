@@ -82,6 +82,37 @@ If you are unsure, run `git status` before committing and never `git add .env*`.
 
 ---
 
+## Deploy
+
+The app is a standard **Next.js 14** project. The easiest path is **[Vercel](https://vercel.com)** (same team as Next.js).
+
+### Vercel (recommended)
+
+1. Push this repo to **GitHub** (or GitLab / Bitbucket).
+2. In [vercel.com/new](https://vercel.com/new), **Import** the repository. Vercel detects Next.js automatically.
+3. Under **Environment Variables**, add (at least for **Production**; add Preview if you want previews to call Claude too):
+   - `ANTHROPIC_API_KEY` — your server key from [Anthropic Console](https://console.anthropic.com/).
+   - `ANTHROPIC_MODEL` — optional; defaults to `claude-sonnet-4-5` in code if unset.
+4. **Deploy**. Your site will get a `*.vercel.app` URL; attach a custom domain in Project → **Domains** if you like. With the default Git integration, each push to your production branch triggers a new deploy.
+
+**CLI (optional):** install the [Vercel CLI](https://vercel.com/docs/cli), run `vercel login`, then from the repo root run `vercel` (preview) or `vercel --prod`. Add secrets with `vercel env add ANTHROPIC_API_KEY` or in the dashboard under **Settings → Environment Variables**.
+
+`vercel.json` requests up to **60s** for `app/api/tailor/route.ts`. On **Hobby**, serverless timeouts are shorter than on **Pro**, so very slow Claude calls may time out until you upgrade or the model responds faster. Redeploy after changing env vars.
+
+### Smoke test before / after deploy
+
+```bash
+PATH="/usr/local/opt/node@20/bin:$PATH" npm run build && npm run start
+```
+
+Then open `/` and `/tailor`, run one generation, and confirm downloads work.
+
+### Other hosts
+
+Any platform that can run **Node 18+** and a **Next.js** production build (`npm run build` → `npm run start`) works (Docker, Railway, Fly.io, AWS, etc.). Set the same environment variables as on Vercel. For serverless platforms, mirror the **function timeout** and **Node** version settings so `/api/tailor` can finish.
+
+---
+
 ## Project layout
 
 ```
@@ -101,6 +132,7 @@ If you are unsure, run `git status` before committing and never `git add .env*`.
 │   └── prompt.ts             # System prompt builder
 ├── docs/screenshots/         # README imagery
 ├── .env.example
+├── vercel.json               # Serverless maxDuration for /api/tailor (Vercel)
 └── package.json
 ```
 
