@@ -1,5 +1,6 @@
 import { useCallback } from "react";
-import type { TailorStatus } from "./types";
+import { tailorResume, type TailorReport } from "@/lib/tailor";
+import type { TailorMode, TailorStatus } from "./types";
 import { exportTailoredDocx } from "./exportDocx";
 import { exportTailoredPdf } from "./exportPdf";
 import { exportTailoredTxt } from "./exportTxt";
@@ -12,15 +13,30 @@ export function useTailorActions(
   tone: string,
   pages: string,
   output: string,
+  mode: TailorMode,
   setOutput: (v: string) => void,
   setStatus: SetStatus,
-  setLoading: (v: boolean) => void
+  setLoading: (v: boolean) => void,
+  setReport: (r: TailorReport | null) => void
 ) {
   const generate = useCallback(async () => {
     if (!resume.trim()) return setStatus({ kind: "err", text: "Please paste your resume." });
     if (!jd.trim()) return setStatus({ kind: "err", text: "Please paste the job description." });
 
+    if (mode === "algorithm") {
+      // Pure, offline tailoring — no network, no API key.
+      const { tailored, report } = tailorResume({ resume, jd });
+      setOutput(tailored);
+      setReport(report);
+      setStatus({
+        kind: "ok",
+        text: `Tailored offline. Match ${report.matchBefore}% → ${report.matchAfter}%. Review before sending.`,
+      });
+      return;
+    }
+
     setLoading(true);
+    setReport(null);
     setStatus({ kind: "info", text: "Contacting Claude…" });
     try {
       const res = await fetch("/api/tailor", {
@@ -42,7 +58,7 @@ export function useTailorActions(
     } finally {
       setLoading(false);
     }
-  }, [resume, jd, tone, pages, setOutput, setStatus, setLoading]);
+  }, [resume, jd, tone, pages, mode, setOutput, setStatus, setLoading, setReport]);
 
   const copyOutput = useCallback(async () => {
     if (!output) return setStatus({ kind: "err", text: "Nothing to copy yet." });

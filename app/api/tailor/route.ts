@@ -17,8 +17,8 @@ export async function POST(req: NextRequest) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
     return NextResponse.json(
-      { error: "Server is missing ANTHROPIC_API_KEY. Add it to your environment." },
-      { status: 500 }
+      { error: "AI mode unavailable: ANTHROPIC_API_KEY not set. Use Algorithm mode instead." },
+      { status: 503 }
     );
   }
 
