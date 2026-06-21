@@ -1,23 +1,47 @@
-import { FeatureCard } from "./FeatureCard";
+import { FeatureTile } from "./FeatureCard";
 
 export function LandingFeatures() {
   return (
-    <section className="max-w-5xl mx-auto w-full px-6 pb-24 grid grid-cols-1 sm:grid-cols-3 gap-5">
-      <FeatureCard
-        icon="🎯"
-        title="ATS keyword match"
-        body="Instantly see which keywords from the job description are — and aren't — in your resume. Live score updates as you edit."
-      />
-      <FeatureCard
-        icon="✍️"
-        title="Claude rewrites your bullets"
-        body="Every bullet point is rewritten using the STAR pattern: action verb, what you did, and quantified impact. Factual content is preserved."
-      />
-      <FeatureCard
-        icon="📄"
-        title="Download in any format"
-        body="Export your polished resume as a .docx, PDF, or plain .txt — ready to attach to any application in seconds."
-      />
+    <section className="max-w-6xl mx-auto w-full px-6 py-20 lg:py-24">
+      <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 max-w-2xl">
+        Everything the rewrite does, you can see and verify
+      </h2>
+
+      <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <FeatureTile
+          tinted
+          className="md:col-span-2"
+          title="Tailoring without AI"
+          body="A deterministic engine reorders your bullets by relevance, swaps weak verbs for strong ones, surfaces missing keywords, and drafts a role-specific summary. It runs entirely in your browser, with no API key and nothing sent to a server."
+        >
+          <div className="mt-5 flex flex-wrap gap-2">
+            {["Reorder", "Strengthen", "Keyword match", "Summary"].map((t) => (
+              <span
+                key={t}
+                className="text-xs font-medium px-2.5 py-1 rounded-full bg-accent/10 text-accent dark:text-accent-soft"
+              >
+                {t}
+              </span>
+            ))}
+          </div>
+        </FeatureTile>
+
+        <FeatureTile
+          title="Live ATS match"
+          body="Watch matched and missing keywords from the job post update the moment you edit, so you always know where you stand."
+        />
+
+        <FeatureTile
+          title="Full transparency"
+          body="A report shows exactly what changed: how many bullets moved, what was strengthened, and every keyword added, each flagged for your review."
+        />
+
+        <FeatureTile
+          className="md:col-span-2"
+          title="Export anywhere, optional AI on top"
+          body="Download ATS-clean .docx, PDF, or .txt in one click. Prefer a full AI rewrite? Add a Claude API key and flip one toggle. The offline engine stays the default."
+        />
+      </div>
     </section>
   );
 }

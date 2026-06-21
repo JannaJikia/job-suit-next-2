@@ -1,14 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import type { TailorReport } from "@/lib/tailor";
 import { TONE_OPTIONS } from "./constants";
+import { ChangeReportCard } from "./ChangeReportCard";
 import { GenerateCard } from "./GenerateCard";
 import { JobDescriptionCard } from "./JobDescriptionCard";
 import { MatchAnalysisCard } from "./MatchAnalysisCard";
 import { OutputCard } from "./OutputCard";
 import { ResumeCard } from "./ResumeCard";
 import { TailorHeader } from "./TailorHeader";
-import type { TailorStatus } from "./types";
+import type { TailorMode, TailorStatus } from "./types";
 import { useKeywordMatch } from "./useKeywordMatch";
 import { useTailorActions } from "./useTailorActions";
 import { useTailorPersistence } from "./useTailorPersistence";
@@ -17,10 +19,12 @@ export default function ResumeTailorApp() {
   const [resume, setResume] = useState("");
   const [jd, setJd] = useState("");
   const [tone, setTone] = useState<string>(TONE_OPTIONS[0].value);
-  const [pages, setPages] = useState("1–2 pages");
+  const [pages, setPages] = useState("1-2 pages");
   const [output, setOutput] = useState("");
   const [status, setStatus] = useState<TailorStatus>(null);
   const [loading, setLoading] = useState(false);
+  const [mode, setMode] = useState<TailorMode>("algorithm");
+  const [report, setReport] = useState<TailorReport | null>(null);
 
   useTailorPersistence(resume, jd, tone, pages, setResume, setJd, setTone, setPages);
   const { keywords, activeMatch } = useKeywordMatch(jd, resume, output);
@@ -30,9 +34,11 @@ export default function ResumeTailorApp() {
     tone,
     pages,
     output,
+    mode,
     setOutput,
     setStatus,
-    setLoading
+    setLoading,
+    setReport
   );
 
   return (
@@ -50,11 +56,18 @@ export default function ResumeTailorApp() {
             onToneChange={setTone}
             onPagesChange={setPages}
           />
-          <GenerateCard loading={loading} status={status} onGenerate={generate} />
+          <GenerateCard
+            loading={loading}
+            status={status}
+            mode={mode}
+            onModeChange={setMode}
+            onGenerate={generate}
+          />
         </section>
 
         <section className="space-y-5">
           <MatchAnalysisCard keywords={keywords} activeMatch={activeMatch} />
+          <ChangeReportCard report={report} />
           <OutputCard
             output={output}
             onCopy={copyOutput}
@@ -66,7 +79,7 @@ export default function ResumeTailorApp() {
       </div>
 
       <footer className="text-center text-slate-500 text-xs py-5">
-        JobSuit · powered by Claude · your data is sent only to your server
+        JobSuit · offline by default, AI optional. Your data stays in your browser.
       </footer>
     </main>
   );
