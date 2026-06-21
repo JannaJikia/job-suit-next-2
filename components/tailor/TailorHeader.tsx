@@ -1,18 +1,11 @@
-import Image from "next/image";
 import Link from "next/link";
+import { Logo } from "@/components/Logo";
 
 export function TailorHeader() {
   return (
     <header className="py-6 flex items-center justify-between flex-wrap gap-3">
       <Link href="/" className="flex items-center gap-2.5 group">
-        <Image
-          src="/logo-mark.png"
-          alt="JobSuit"
-          width={36}
-          height={36}
-          className="rounded-lg transition group-hover:opacity-90"
-          priority
-        />
+        <Logo className="h-9 w-9 transition group-hover:opacity-90" />
         <span className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
           JobSuit
         </span>
