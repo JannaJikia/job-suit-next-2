@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
   const resume = (body.resume || "").trim();
   const jd = (body.jd || "").trim();
   const tone = body.tone || "concise, metric-driven, impactful";
-  const pages = body.pages || "1–2 pages";
+  const pages = body.pages || "1-2 pages";
 
   if (!resume) return NextResponse.json({ error: "Resume is required." }, { status: 400 });
   if (!jd) return NextResponse.json({ error: "Job description is required." }, { status: 400 });

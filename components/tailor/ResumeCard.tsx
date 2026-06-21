@@ -15,7 +15,7 @@ export function ResumeCard({ resume, onResumeChange }: Props) {
         onChange={(e) => onResumeChange(e.target.value)}
         placeholder={"Jane Doe\njane@example.com | 555-1234\n\nSUMMARY\n…\n\nEXPERIENCE\n…"}
       />
-      <Hint>Include everything — summary, experience, skills, education. Claude will trim and reorder.</Hint>
+      <Hint>Include everything: summary, experience, skills, education. JobSuit reorders and tightens it for you.</Hint>
     </Card>
   );
 }

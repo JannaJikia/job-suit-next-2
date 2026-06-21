@@ -7,13 +7,17 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
+        mono: ["var(--font-geist-mono)", "ui-monospace", "monospace"],
+      },
       colors: {
-        bg: "#0f172a",
-        card: "#1e293b",
-        border: "#334155",
-        muted: "#94a3b8",
-        accent: "#6366f1",
-        accent2: "#8b5cf6",
+        // Single locked accent across the whole product.
+        accent: {
+          DEFAULT: "#059669", // emerald-600
+          hover: "#047857", // emerald-700
+          soft: "#10b981", // emerald-500 (dark-mode text)
+        },
       },
     },
   },

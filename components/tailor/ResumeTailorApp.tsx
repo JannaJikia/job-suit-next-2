@@ -19,7 +19,7 @@ export default function ResumeTailorApp() {
   const [resume, setResume] = useState("");
   const [jd, setJd] = useState("");
   const [tone, setTone] = useState<string>(TONE_OPTIONS[0].value);
-  const [pages, setPages] = useState("1–2 pages");
+  const [pages, setPages] = useState("1-2 pages");
   const [output, setOutput] = useState("");
   const [status, setStatus] = useState<TailorStatus>(null);
   const [loading, setLoading] = useState(false);
@@ -79,7 +79,7 @@ export default function ResumeTailorApp() {
       </div>
 
       <footer className="text-center text-slate-500 text-xs py-5">
-        JobSuit · offline algorithm by default · AI optional · your data stays in your browser
+        JobSuit · offline by default, AI optional. Your data stays in your browser.
       </footer>
     </main>
   );
