@@ -4,7 +4,7 @@ import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "JobSuit — ATS Resume Tailor",
+  title: "JobSuit: ATS Resume Tailor",
   description:
     "Tailor your resume to any job description with a transparent offline algorithm. ATS-optimized DOCX and PDF output.",
 };

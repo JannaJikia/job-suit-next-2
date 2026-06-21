@@ -16,4 +16,8 @@ describe("strengthenBullet", () => {
     const { text } = strengthenBullet("Improved performance");
     expect(/\d/.test(text)).toBe(false);
   });
+  it("replaces the whole first token when it carries trailing punctuation", () => {
+    const { text } = strengthenBullet("Managed, end to end, a team");
+    expect(text).toBe("Led end to end, a team");
+  });
 });

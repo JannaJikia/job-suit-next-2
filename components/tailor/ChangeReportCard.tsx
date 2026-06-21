@@ -5,7 +5,7 @@ export function ChangeReportCard({ report }: { report: TailorReport | null }) {
   if (!report) return null;
   return (
     <Card>
-      <SectionTitle num={5}>What changed</SectionTitle>
+      <SectionTitle num={4}>What changed</SectionTitle>
       <ul className="text-sm space-y-1.5 text-zinc-600 dark:text-zinc-400">
         <li>
           Bullets reordered by relevance:{" "}

@@ -20,6 +20,9 @@ describe("summary", () => {
   it("falls back to a generic phrase when no role line exists", () => {
     expect(extractRoleTitle("About the job\nModels are what they eat.")).toBe("this role");
   });
+  it("keeps periods in abbreviated titles but trims after a colon", () => {
+    expect(extractRoleTitle("Sr. Software Engineer: apply now")).toBe("Sr. Software Engineer");
+  });
   it("builds a summary from present skills only", () => {
     const s = buildSummary(resume, "Senior Frontend Engineer", ["react", "aws", "kotlin"]);
     expect(s.toLowerCase()).toContain("react");

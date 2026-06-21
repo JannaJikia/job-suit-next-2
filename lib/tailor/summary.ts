@@ -18,7 +18,9 @@ export function extractRoleTitle(jd: string): string {
   // Prefer a short, title-like line that names a role and isn't boilerplate.
   for (const line of lines.slice(0, 8)) {
     if (line.length > 70 || BOILERPLATE.test(line)) continue;
-    if (ROLE_WORDS.test(line)) return line.replace(/[.:].*$/, "").trim();
+    // Trim a trailing description after a colon ("Engineer: join us"), but keep
+    // periods so abbreviated titles like "Sr. Software Engineer" survive.
+    if (ROLE_WORDS.test(line)) return line.replace(/:.*$/, "").trim();
   }
   return "this role";
 }

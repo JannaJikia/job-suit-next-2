@@ -16,10 +16,12 @@ export function strengthenBullet(bullet: string): { text: string; changed: boole
     }
   }
 
-  // 2. single weak lead verb
-  const firstWord = text.split(/\s+/)[0].toLowerCase().replace(/[^a-z]/g, "");
-  if (WEAK_VERB_MAP[firstWord]) {
-    text = WEAK_VERB_MAP[firstWord] + text.slice(firstWord.length);
+  // 2. single weak lead verb — slice by the ORIGINAL token length so trailing
+  // punctuation on the first word doesn't shift the cut point.
+  const token = text.split(/\s+/)[0];
+  const key = token.toLowerCase().replace(/[^a-z]/g, "");
+  if (WEAK_VERB_MAP[key]) {
+    text = WEAK_VERB_MAP[key] + text.slice(token.length);
   }
   text = cap(text);
   return { text, changed: text !== original };
