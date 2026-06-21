@@ -19,7 +19,7 @@ Every run returns a **transparency report** showing exactly what changed and the
 
 ---
 ## Deployed Preview
-https://job-suit-nextgen.vercel.app/
+[https://job-suit-nextgen.vercel.app/](https://job-suit-next-2.vercel.app/)
 
 ## Screenshots
 
