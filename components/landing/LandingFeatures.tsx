@@ -38,8 +38,8 @@ export function LandingFeatures() {
 
         <FeatureTile
           className="md:col-span-2"
-          title="Export anywhere, optional AI on top"
-          body="Download ATS-clean .docx, PDF, or .txt in one click. Prefer a full AI rewrite? Add a Claude API key and flip one toggle. The offline engine stays the default."
+          title="Export a polished, ATS-clean document"
+          body="Download a styled, single-column resume as .docx, PDF, or .txt in one click — consistent headings, spacing, and bullets that parsers and recruiters both read cleanly. What you see in the preview is exactly what you download."
         />
       </div>
     </section>

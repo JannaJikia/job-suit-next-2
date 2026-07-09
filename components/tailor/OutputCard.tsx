@@ -1,4 +1,5 @@
-import { Card, GhostButton, SectionTitle } from "./ui";
+import { Card, CardTitle, GhostButton } from "./ui";
+import { ResumePreview } from "./ResumePreview";
 
 type Props = {
   output: string;
@@ -11,10 +12,12 @@ type Props = {
 export function OutputCard({ output, onCopy, onDocx, onPdf, onTxt }: Props) {
   return (
     <Card>
-      <SectionTitle num={5}>Your tailored resume</SectionTitle>
-      <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 p-4 max-h-[600px] min-h-[200px] overflow-y-auto whitespace-pre-wrap font-mono text-[13px] leading-6 text-zinc-800 dark:text-zinc-200">
-        {output || (
-          <span className="italic text-zinc-400 dark:text-zinc-600">
+      <CardTitle>Your tailored resume</CardTitle>
+      <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-950 p-4 sm:p-6 max-h-[640px] min-h-[200px] overflow-y-auto">
+        {output.trim() ? (
+          <ResumePreview output={output} />
+        ) : (
+          <span className="block py-16 text-center italic text-zinc-400 dark:text-zinc-600">
             Your tailored ATS-ready resume will appear here…
           </span>
         )}

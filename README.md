@@ -1,21 +1,25 @@
 # JobSuit
 
-**JobSuit** tailors your resume to any job description with a **deterministic, no-AI algorithm** that runs entirely in your browser. It reorders bullets by relevance, strengthens weak verbs, surfaces missing keywords, drafts a role-specific summary, and shows a **live ATS keyword match score**. Export **`.docx`**, **`.pdf`**, or **`.txt`**.
+**JobSuit** tailors your resume to any job description with a **deterministic, no-AI algorithm** that runs entirely in your browser. It reorders bullets by relevance (BM25), strengthens weak verbs, surfaces missing keywords, drafts a role-specific summary, and shows a **live ATS keyword match score**. Export a styled, single-column, ATS-clean **`.docx`**, **`.pdf`**, or **`.txt`**.
 
-No API key, no account, and nothing leaves your browser. An optional **AI mode** (Claude) is available if you add an Anthropic API key.
+No API key, no account, no server — nothing leaves your browser.
 
-Stack: **Next.js 14** (App Router), **TypeScript**, **Tailwind CSS**, **Vitest**. Anthropic SDK is used only for the optional AI mode.
+Stack: **Next.js 14** (App Router), **TypeScript**, **Tailwind CSS**, **Vitest**.
 
 ## How tailoring works
 
 The offline engine (`lib/tailor/`) is a pure pipeline with no network calls:
 
-1. **Reorder** bullets within Experience/Projects/Skills by relevance to the job description.
+1. **Reorder** bullets within Experience/Projects/Skills by relevance to the job description, ranked with **BM25** (IDF-weighted, length-normalized) so genuinely distinguishing bullets rise to the top.
 2. **Strengthen** bullets: weak lead verbs are swapped for strong action verbs (no facts or numbers are invented).
 3. **Inject** missing keywords into Skills (skill-like terms only), each flagged in a review panel so you can remove anything untrue.
 4. **Summarize**: a role-specific summary is drafted from the job title and your top matching skills.
 
 Every run returns a **transparency report** showing exactly what changed and the before/after match score.
+
+### Styled output
+
+The tailored resume is parsed into a structured document model (title → contact → sections → entries → bullets) and rendered identically three ways — the on-screen preview, the `.docx`, and the PDF — in a **"Classic professional"** layout: centered name, muted contact line, small-caps section headings with a rule, bold entry headers, and disc bullets. Single column and ATS-safe fonts throughout, so what you see in the preview is exactly what you download.
 
 ---
 ## Deployed Preview
@@ -34,18 +38,19 @@ Representative views of the app (marketing landing and tailor workspace).
 ## Features
 
 - **Offline tailoring** (`/tailor`) — paste resume + job description and tailor it in the browser, no key required.
-- **Mode toggle** — default **Algorithm** (offline) or optional **AI (Claude)** when an API key is present.
+- **BM25 relevance ranking** — bullets are reordered by an IDF-weighted, length-normalized score, not a naive keyword count.
 - **ATS-style analysis** — extracts keywords from the JD and shows match % plus matched / missing terms (updates as you edit or after generation).
 - **Transparency report** — see how many bullets were reordered/strengthened, the summary status, and every injected keyword flagged for review.
-- **Exports** — copy to clipboard; download Word, PDF, or plain text with sensible section and bullet formatting.
-- **Local persistence** — resume, JD, tone, and length are saved in `localStorage` so a refresh does not wipe your work.
+- **Styled exports** — copy to clipboard; download a single-column, ATS-clean Word, PDF, or plain-text document with consistent headings and bullets.
+- **Local persistence** — resume and JD are saved in `localStorage` so a refresh does not wipe your work.
 
 ---
 
 ## Requirements
 
 - **Node.js ≥ 18.17** (Node 20 LTS recommended). If `node -v` shows 16.x, use Homebrew’s Node 20, e.g. `export PATH="/usr/local/opt/node@20/bin:$PATH"` (Apple Silicon: `/opt/homebrew/opt/node@20/bin`).
-- An [Anthropic API key](https://console.anthropic.com/) — **optional**, only for AI mode.
+
+No API keys or environment variables are required — the app is fully client-side.
 
 ---
 
@@ -58,37 +63,17 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) and go to `/tailor`. The offline algorithm works immediately, no setup required.
 
-For optional **AI mode**, add a key:
-
-```bash
-cp .env.example .env.local
-# Edit .env.local — set ANTHROPIC_API_KEY
-```
-
-### Environment variables
-
-| Variable | Required | Description |
-| -------- | -------- | ----------- |
-| `ANTHROPIC_API_KEY` | No | Server-side key for Claude. Only needed for the optional AI mode; the algorithm runs without it. |
-| `ANTHROPIC_MODEL` | No | Model id (default in code: `claude-sonnet-4-5`). |
-
-Use `.env.local` locally; on **Vercel** (or similar), set the same variables in the project dashboard.
-
 ### What belongs in Git
 
-**Commit:** application source, `package.json` / lockfile, `README.md`, `.env.example`, `docs/`, and `next-env.d.ts` (TypeScript refs for Next — regenerate with `next dev` or `next build` if missing).
+**Commit:** application source, `package.json` / lockfile, `README.md`, `docs/`, and `next-env.d.ts` (TypeScript refs for Next — regenerate with `next dev` or `next build` if missing).
 
 **Do not commit:** anything ignored by `.gitignore`, including:
 
-- **Secrets:** any `.env*` file except `.env.example` (see `.gitignore`)
 - **Dependencies:** `node_modules/`
 - **Build output:** `.next/`, `out/`, `dist/`
 - **Deploy metadata:** `.vercel/`
 - **OS / editor noise:** `.DS_Store`, `Thumbs.db`, `.vscode/`, `.idea/`
-- **Local AI tooling:** `.claude/` (Claude Code machine-specific settings)
 - **Caches:** `*.tsbuildinfo`, `.eslintcache`, `.turbo`
-
-If you are unsure, run `git status` before committing and never `git add .env*`.
 
 ### Scripts
 
@@ -104,20 +89,15 @@ If you are unsure, run `git status` before committing and never `git add .env*`.
 
 ## Deploy
 
-The app is a standard **Next.js 14** project. The easiest path is **[Vercel](https://vercel.com)** (same team as Next.js).
+The app is a standard **Next.js 14** project with no server-side secrets or API routes. The easiest path is **[Vercel](https://vercel.com)** (same team as Next.js).
 
 ### Vercel (recommended)
 
 1. Push this repo to **GitHub** (or GitLab / Bitbucket).
 2. In [vercel.com/new](https://vercel.com/new), **Import** the repository. Vercel detects Next.js automatically.
-3. Under **Environment Variables**, add (at least for **Production**; add Preview if you want previews to call Claude too):
-   - `ANTHROPIC_API_KEY` — your server key from [Anthropic Console](https://console.anthropic.com/).
-   - `ANTHROPIC_MODEL` — optional; defaults to `claude-sonnet-4-5` in code if unset.
-4. **Deploy**. Your site will get a `*.vercel.app` URL; attach a custom domain in Project → **Domains** if you like. With the default Git integration, each push to your production branch triggers a new deploy.
+3. **Deploy**. Your site will get a `*.vercel.app` URL; attach a custom domain in Project → **Domains** if you like. With the default Git integration, each push to your production branch triggers a new deploy. No environment variables are needed.
 
-**CLI (optional):** install the [Vercel CLI](https://vercel.com/docs/cli), run `vercel login`, then from the repo root run `vercel` (preview) or `vercel --prod`. Add secrets with `vercel env add ANTHROPIC_API_KEY` or in the dashboard under **Settings → Environment Variables**.
-
-`vercel.json` requests up to **60s** for `app/api/tailor/route.ts`. On **Hobby**, serverless timeouts are shorter than on **Pro**, so very slow Claude calls may time out until you upgrade or the model responds faster. Redeploy after changing env vars.
+**CLI (optional):** install the [Vercel CLI](https://vercel.com/docs/cli), run `vercel login`, then from the repo root run `vercel` (preview) or `vercel --prod`.
 
 ### Smoke test before / after deploy
 
@@ -129,7 +109,7 @@ Then open `/` and `/tailor`, run one generation, and confirm downloads work.
 
 ### Other hosts
 
-Any platform that can run **Node 18+** and a **Next.js** production build (`npm run build` → `npm run start`) works (Docker, Railway, Fly.io, AWS, etc.). Set the same environment variables as on Vercel. For serverless platforms, mirror the **function timeout** and **Node** version settings so `/api/tailor` can finish.
+Any platform that can run **Node 18+** and a **Next.js** production build (`npm run build` → `npm run start`) works (Docker, Railway, Fly.io, AWS, etc.). Because everything runs client-side, no extra configuration is required.
 
 ---
 
@@ -137,7 +117,6 @@ Any platform that can run **Node 18+** and a **Next.js** production build (`npm 
 
 ```
 ├── app/
-│   ├── api/tailor/route.ts   # POST → Anthropic (AI mode only); 503 if no key
 │   ├── tailor/page.tsx       # Tailor page metadata + app shell
 │   ├── layout.tsx            # Geist fonts + theme
 │   ├── page.tsx              # Re-exports landing page
@@ -145,16 +124,15 @@ Any platform that can run **Node 18+** and a **Next.js** production build (`npm 
 ├── components/
 │   ├── landing/              # Marketing page sections
 │   ├── tailor/               # Resume tailor UI, hooks, export helpers
+│   │                         #   (ResumePreview + exportDocx/Pdf/Txt render the
+│   │                         #    structured "Classic professional" layout)
 │   └── ResumeTailorApp.tsx   # Re-export of tailor/ResumeTailorApp
 ├── lib/
-│   ├── tailor/               # Offline tailoring pipeline (parse, score,
+│   ├── tailor/               # Offline tailoring pipeline (parse, score/BM25,
 │   │                         #   reorder, strengthen, inject, summary, serialize)
 │   ├── keywords.ts           # JD keyword extraction + match scoring
-│   ├── parseResumeOutput.ts  # Shared line parsing for .docx / PDF
-│   └── prompt.ts             # AI-mode prompt builder
+│   └── parseResumeOutput.ts  # Shared line parsing for the structured renderers
 ├── docs/screenshots/         # README imagery
-├── .env.example
-├── vercel.json               # Serverless maxDuration for /api/tailor (Vercel)
 └── package.json
 ```
 
