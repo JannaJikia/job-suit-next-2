@@ -43,7 +43,7 @@ export function ResumePreview({ output }: { output: string }) {
                   </p>
                 ))}
                 {entry.bullets.length > 0 && (
-                  <ul className="mt-1 list-disc pl-5 space-y-1 marker:text-zinc-400">
+                  <ul className="mt-1 list-disc pl-5 space-y-1 marker:text-zinc-500">
                     {entry.bullets.map((b, bi) => (
                       <li key={bi} className="text-[12.5px] text-zinc-800 leading-snug pl-0.5">
                         {b}
