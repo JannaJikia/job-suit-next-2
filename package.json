@@ -2,7 +2,7 @@
   "name": "job-suit",
   "version": "0.1.0",
   "private": true,
-  "description": "JobSuit — tailor your resume to any job description using Claude, optimized for ATS.",
+  "description": "JobSuit — tailor your resume to any job description with a deterministic, offline algorithm, optimized for ATS.",
   "engines": {
     "node": ">=18.17.0"
   },
@@ -15,7 +15,6 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.30.1",
     "docx": "^8.5.0",
     "file-saver": "^2.0.5",
     "geist": "^1.7.2",

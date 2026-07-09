@@ -2,15 +2,15 @@
 
 import { useState } from "react";
 import type { TailorReport } from "@/lib/tailor";
-import { TONE_OPTIONS } from "./constants";
 import { ChangeReportCard } from "./ChangeReportCard";
 import { GenerateCard } from "./GenerateCard";
 import { JobDescriptionCard } from "./JobDescriptionCard";
 import { MatchAnalysisCard } from "./MatchAnalysisCard";
 import { OutputCard } from "./OutputCard";
+import { ResultScoreCard } from "./ResultScoreCard";
 import { ResumeCard } from "./ResumeCard";
 import { TailorHeader } from "./TailorHeader";
-import type { TailorMode, TailorStatus } from "./types";
+import type { TailorStatus } from "./types";
 import { useKeywordMatch } from "./useKeywordMatch";
 import { useTailorActions } from "./useTailorActions";
 import { useTailorPersistence } from "./useTailorPersistence";
@@ -18,56 +18,36 @@ import { useTailorPersistence } from "./useTailorPersistence";
 export default function ResumeTailorApp() {
   const [resume, setResume] = useState("");
   const [jd, setJd] = useState("");
-  const [tone, setTone] = useState<string>(TONE_OPTIONS[0].value);
-  const [pages, setPages] = useState("1-2 pages");
   const [output, setOutput] = useState("");
   const [status, setStatus] = useState<TailorStatus>(null);
-  const [loading, setLoading] = useState(false);
-  const [mode, setMode] = useState<TailorMode>("algorithm");
   const [report, setReport] = useState<TailorReport | null>(null);
 
-  useTailorPersistence(resume, jd, tone, pages, setResume, setJd, setTone, setPages);
+  useTailorPersistence(resume, jd, setResume, setJd);
   const { keywords, activeMatch } = useKeywordMatch(jd, resume, output);
   const { generate, copyOutput, downloadTxt, downloadDocx, downloadPdf } = useTailorActions(
     resume,
     jd,
-    tone,
-    pages,
     output,
-    mode,
     setOutput,
     setStatus,
-    setLoading,
     setReport
   );
 
   return (
-    <main className="max-w-[1400px] mx-auto px-8 pb-12">
+    <main className="max-w-[1400px] mx-auto px-6 sm:px-8 pb-12">
       <TailorHeader />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        <section className="space-y-5">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+        {/* Setup rail — inputs + action, pinned while the result scrolls */}
+        <aside className="lg:col-span-5 xl:col-span-4 space-y-5 lg:sticky lg:top-6">
           <ResumeCard resume={resume} onResumeChange={setResume} />
-          <JobDescriptionCard
-            jd={jd}
-            tone={tone}
-            pages={pages}
-            onJdChange={setJd}
-            onToneChange={setTone}
-            onPagesChange={setPages}
-          />
-          <GenerateCard
-            loading={loading}
-            status={status}
-            mode={mode}
-            onModeChange={setMode}
-            onGenerate={generate}
-          />
-        </section>
+          <JobDescriptionCard jd={jd} onJdChange={setJd} />
+          <GenerateCard status={status} onGenerate={generate} />
+        </aside>
 
-        <section className="space-y-5">
-          <MatchAnalysisCard keywords={keywords} activeMatch={activeMatch} />
-          <ChangeReportCard report={report} />
+        {/* Result stage — score, the tailored document, then the details */}
+        <section className="lg:col-span-7 xl:col-span-8 space-y-5">
+          <ResultScoreCard keywords={keywords} activeMatch={activeMatch} report={report} />
           <OutputCard
             output={output}
             onCopy={copyOutput}
@@ -75,11 +55,13 @@ export default function ResumeTailorApp() {
             onPdf={downloadPdf}
             onTxt={downloadTxt}
           />
+          <ChangeReportCard report={report} />
+          <MatchAnalysisCard keywords={keywords} activeMatch={activeMatch} />
         </section>
       </div>
 
       <footer className="text-center text-slate-500 text-xs py-5">
-        JobSuit · offline by default, AI optional. Your data stays in your browser.
+        JobSuit · deterministic and fully offline. Your data stays in your browser.
       </footer>
     </main>
   );
