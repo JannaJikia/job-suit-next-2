@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
 }
 
 * {
@@ -17,16 +17,10 @@ body {
   min-height: 100vh;
 }
 
-/* Page surface — light default, dark via system preference. */
+/* Page surface — locked to light mode. */
 body {
   background-color: #fafafa;
   color: #18181b;
-}
-@media (prefers-color-scheme: dark) {
-  body {
-    background-color: #09090b;
-    color: #fafafa;
-  }
 }
 
 ::-webkit-scrollbar {
@@ -39,11 +33,6 @@ body {
 ::-webkit-scrollbar-thumb {
   background: #d4d4d8;
   border-radius: 8px;
-}
-@media (prefers-color-scheme: dark) {
-  ::-webkit-scrollbar-thumb {
-    background: #3f3f46;
-  }
 }
 
 textarea {

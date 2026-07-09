@@ -3,6 +3,14 @@
 export const SECTION_HEADING_RE =
   /^(SUMMARY|EXPERIENCE|WORK EXPERIENCE|PROFESSIONAL EXPERIENCE|SKILLS|TECHNICAL SKILLS|EDUCATION|PROJECTS|CERTIFICATIONS|AWARDS|PUBLICATIONS|LANGUAGES)\s*:?\s*$/i;
 
+/**
+ * Matches a leading bullet marker (many glyphs, with or without a following
+ * space) so bullets from any resume style are recognized, e.g. "- ", "• ",
+ * "•Led", "· ", "▪", "–". The lookahead requires real content after the marker
+ * so a lone dash separator line is not treated as an empty bullet.
+ */
+export const BULLET_RE = /^\s*[-*•·‣▪◦‧∙●○➤▸►◆»–—]\s*(?=\S)/;
+
 export type ParsedResumeLine =
   | { kind: "blank" }
   | { kind: "title"; text: string }
@@ -30,8 +38,8 @@ export function parseResumeOutputLines(output: string): ParsedResumeLine[] {
       out.push({ kind: "section", text: trimmed });
       continue;
     }
-    if (/^\s*[-*•]\s+/.test(line)) {
-      out.push({ kind: "bullet", text: line.replace(/^\s*[-*•]\s+/, "") });
+    if (BULLET_RE.test(line)) {
+      out.push({ kind: "bullet", text: line.replace(BULLET_RE, "") });
       continue;
     }
     out.push({ kind: "body", text: line });

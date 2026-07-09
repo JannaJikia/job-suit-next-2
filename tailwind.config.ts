@@ -1,6 +1,10 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  // Locked to light mode: `dark:` utilities only apply under a `.dark` ancestor,
+  // which the app never adds, so the site always renders in light ("white") mode
+  // regardless of the visitor's OS theme.
+  darkMode: "class",
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
